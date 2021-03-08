@@ -367,6 +367,7 @@ CompressorFilter::chooseEncoding(const Http::ResponseHeaderMap& headers) const {
   if (pairs.empty() || allowed_compressors.empty()) {
     // If there's no intersection between accepted encodings and the ones provided by the allowed
     // compressors, then only the "identity" encoding is acceptable.
+    ENVOY_LOG(debug, "Invalid accept-encoding: {}", accept_encoding_)
     return std::make_unique<CompressorFilter::EncodingDecision>(
         Http::CustomHeaders::get().AcceptEncodingValues.Identity,
         CompressorFilter::EncodingDecision::HeaderStat::NotValid);
@@ -386,6 +387,7 @@ CompressorFilter::chooseEncoding(const Http::ResponseHeaderMap& headers) const {
 
   if (!choice.second) {
     // The value of "Accept-Encoding" must be invalid as we ended up with zero q-value.
+    ENVOY_LOG(debug, "Invalid accept-encoding: {}", accept_encoding_)
     return std::make_unique<CompressorFilter::EncodingDecision>(
         Http::CustomHeaders::get().AcceptEncodingValues.Identity,
         CompressorFilter::EncodingDecision::HeaderStat::NotValid);
